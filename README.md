@@ -46,6 +46,22 @@ Cycling is a world of its own, with its races, equipment, technology, techniques
   <strong>Coming soon. Stay tuned for the first ride!</strong> 🚴
 </blockquote>
 
+## Project Presentation
+
+Curious about Miguel's vision, capabilities, and long-term direction?
+
+Take a look at the project overview presentation:
+
+<p align="center">
+  <a href=".github/docs/Miguel-Project-Overview.pdf">
+    <img src="./.github/assets/presentation-preview.png"
+         alt="Miguel Project Overview Presentation"
+         width="500">
+  </a>
+  <br>
+  <strong><a href=".github/docs/Miguel-Project-Overview.pdf">Explore the Project Overview Presentation →</a></strong>
+</p>
+
 
 ## What Will Miguel Know
 
