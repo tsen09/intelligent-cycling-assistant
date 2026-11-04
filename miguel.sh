@@ -133,7 +133,14 @@ main() {
 
         --version|-v)
             show_banner
-            printf '  %sMiguel CLI%s\n\n' "${BOLD}" "${RESET}"
+
+            VERSION=$(python3 -c "
+import tomllib
+with open('$PROJECT_ROOT/pyproject.toml', 'rb') as f:
+    print(tomllib.load(f)['project']['version'])
+")
+
+            printf '  %sMiguel v%s%s\n\n' "${BOLD}" "$VERSION" "${RESET}"
             ;;
 
         *)

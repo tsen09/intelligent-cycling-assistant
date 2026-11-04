@@ -1,0 +1,112 @@
+
+# ============================================================================
+# Miguel - Intelligent Cycling Assistant
+# Project Configuration
+# ============================================================================
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# ============================================================================
+# Project Metadata
+# ============================================================================
+
+[project]
+name = "miguel"
+version = "0.1.0"
+description = "An intelligent virtual assistant for cycling enthusiasts."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+
+authors = [
+    { name = "Tanmoy Sen", email = "sentanmoy09@gmail.com" },
+]
+
+keywords = [
+    "cycling",
+    "bicycles",
+    "virtual-assistant",
+    "multi-agent",
+    "bike-maintenance",
+    "cycling-training",
+    "fastapi",
+    "artificial-intelligence",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: FastAPI",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# ============================================================================
+# Production Dependencies
+# ============================================================================
+
+dependencies = [
+    # Backend
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.34",
+
+    # Database
+    "sqlalchemy[asyncio]>=2.0",
+    "asyncpg>=0.30",
+    "alembic>=1.14",
+
+    # Configuration and validation
+    "pydantic>=2.10",
+    "pydantic-settings>=2.7",
+]
+
+# ============================================================================
+# Development Dependencies
+# ============================================================================
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.25",
+    "httpx>=0.28",
+    "ruff>=0.9",
+    "mypy>=1.14",
+]
+
+# ============================================================================
+# Ruff Configuration
+# ============================================================================
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+    "B",
+]
+
+# ============================================================================
+# Pytest Configuration
+# ============================================================================
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+# ============================================================================
+# Project URLs
+# ============================================================================
+
+[project.urls]
+Homepage = "https://github.com/tsen09/miguel"
+Repository = "https://github.com/tsen09/miguel"
+Issues = "https://github.com/tsen09/miguel/issues"
