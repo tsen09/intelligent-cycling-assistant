@@ -7,83 +7,48 @@ set -Eeuo pipefail
 # Main CLI Entry Point
 # ============================================================================
 
-# Project paths
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# ----------------------------------------------------------------------------
+# Project Paths
+# ----------------------------------------------------------------------------
+
+PROJECT_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$PROJECT_ROOT/scripts"
 
 SETUP_SCRIPT="$SCRIPTS_DIR/setup.sh"
 RUN_SCRIPT="$SCRIPTS_DIR/run.sh"
 
-# ============================================================================
-# Terminal Colors
-# ============================================================================
+# ----------------------------------------------------------------------------
+# Shared Terminal Utilities
+# ----------------------------------------------------------------------------
 
-if [[ -t 1 ]]; then
-    RESET=$'\033[0m'
-    BOLD=$'\033[1m'
-    DIM=$'\033[2m'
-    GREEN=$'\033[0;32m'
-    CYAN=$'\033[0;36m'
-    YELLOW=$'\033[0;33m'
-    RED=$'\033[0;31m'
-else
-    RESET=''
-    BOLD=''
-    DIM=''
-    GREEN=''
-    CYAN=''
-    YELLOW=''
-    RED=''
-fi
-
-# ============================================================================
-# Display
-# ============================================================================
-
-show_banner() {
-    printf '\n'
-    printf '%s' "${GREEN}${BOLD}"
-
-    cat <<'EOF'
- __  __ ___ ____ _   _ _____ _
-|  \/  |_ _/ ___| | | | ____| |
-| |\/| || | |  _| | | |  _| | |
-| |  | || | |_| | |_| | |___| |___
-|_|  |_|___\____|\___/|_____|_____|
-EOF
-
-    printf '%s' "${RESET}"
-    printf '  %sIntelligent Cycling Assistant%s\n' "${DIM}" "${RESET}"
-    printf '  %sYour Cycling Companion to fuel Your Passion.%s\n' "${DIM}" "${RESET}"
-    printf '\n'
-}
+source "$SCRIPTS_DIR/lib/common.sh"
 
 # ============================================================================
 # Help
 # ============================================================================
 
 show_help() {
-    show_banner
+    print_banner
 
-    printf '%sUSAGE%s\n' "${BOLD}" "${RESET}"
+    printf '%bUSAGE%b\n' "$BOLD" "$RESET"
     printf '  ./miguel.sh <command> [options]\n\n'
 
-    printf '%sCOMMANDS%s\n' "${BOLD}" "${RESET}"
-    printf '  %ssetup%s       Set up the project environment\n' "${CYAN}" "${RESET}"
-    printf '  %srun%s         Start Miguel\n' "${CYAN}" "${RESET}"
-    printf '  %shelp%s        Display this help message\n\n' "${CYAN}" "${RESET}"
+    printf '%bCOMMANDS%b\n' "$BOLD" "$RESET"
+    printf '  %bsetup%b       Set up the project environment\n' "$CYAN" "$RESET"
+    printf '  %brun%b         Start Miguel\n' "$CYAN" "$RESET"
+    printf '  %bhelp%b        Display this help message\n\n' "$CYAN" "$RESET"
 
-    printf '%sOPTIONS%s\n' "${BOLD}" "${RESET}"
-    printf '  %s-h, --help%s      Display help\n' "${CYAN}" "${RESET}"
-    printf '  %s-v, --version%s   Display version information\n\n' "${CYAN}" "${RESET}"
+    printf '%bOPTIONS%b\n' "$BOLD" "$RESET"
+    printf '  %b-h, --help%b      Display help\n' "$CYAN" "$RESET"
+    printf '  %b-v, --version%b   Display version information\n\n' "$CYAN" "$RESET"
 
-    printf '%sEXAMPLES%s\n' "${BOLD}" "${RESET}"
+    printf '%bEXAMPLES%b\n' "$BOLD" "$RESET"
     printf '  ./miguel.sh setup\n'
     printf '  ./miguel.sh run\n'
     printf '  ./miguel.sh run --mode production\n\n'
 
-    printf '%sMiguel | Open-source cycling assistant | MIT License%s\n\n' \
-        "${DIM}" "${RESET}"
+    printf '%bMiguel | Open-source cycling assistant | MIT License%b\n\n' \
+        "$DIM" "$RESET"
 }
 
 # ============================================================================
@@ -93,15 +58,15 @@ show_help() {
 execute_script() {
     local script_path="$1"
     local script_name="$2"
+
     shift 2
 
     if [[ ! -f "$script_path" ]]; then
-        printf '%s[ERROR]%s Script not found: %s\n' \
-            "${RED}" "${RESET}" "$script_path" >&2
+        log_error "Script not found: $script_path"
         exit 1
     fi
 
-    printf '%s[INFO]%s %s\n\n' "${GREEN}" "${RESET}" "$script_name"
+    log_info "$script_name"
 
     exec bash "$script_path" "$@"
 }
@@ -117,13 +82,11 @@ main() {
 
         setup)
             shift
-            show_banner
             execute_script "$SETUP_SCRIPT" "Preparing Miguel..." "$@"
             ;;
 
         run)
             shift
-            show_banner
             execute_script "$RUN_SCRIPT" "Launching Miguel..." "$@"
             ;;
 
@@ -132,22 +95,37 @@ main() {
             ;;
 
         --version|-v)
-            show_banner
+            print_banner
 
-            VERSION=$(python3 -c "
+            if [[ ! -f "$PROJECT_ROOT/pyproject.toml" ]]; then
+                log_error "pyproject.toml not found."
+                exit 1
+            fi
+
+            if ! command -v python3 &>/dev/null; then
+                log_error "Python 3 is required to read the project version."
+                exit 1
+            fi
+
+            VERSION="$(python3 -c '
+import sys
 import tomllib
-with open('$PROJECT_ROOT/pyproject.toml', 'rb') as f:
-    print(tomllib.load(f)['project']['version'])
-")
 
-            printf '  %sMiguel v%s%s\n\n' "${BOLD}" "$VERSION" "${RESET}"
+with open(sys.argv[1], "rb") as f:
+    print(tomllib.load(f)["project"]["version"])
+' "$PROJECT_ROOT/pyproject.toml")"
+
+            printf '  %bMiguel v%s%b\n\n' "$BOLD" "$VERSION" "$RESET"
             ;;
 
         *)
-            show_banner
-            printf '%s[ERROR]%s Unknown command: %s\n\n' \
-                "${RED}" "${RESET}" "$command" >&2
+            print_banner
+
+            log_error "Unknown command: $command"
+
+            printf '\n'
             show_help
+
             exit 1
             ;;
 
