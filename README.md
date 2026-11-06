@@ -104,6 +104,84 @@ Whether you're following the Tour de France, preparing for your next century rid
   <i>Ride more. Know more. Ride better. 🚴</i>
 </p>
 
+---
+
+## ⚙️ Setup & Usage
+
+Follow these steps to set up and run Miguel locally.
+
+### Prerequisites
+
+- Python 3.13+
+- [uv](https://docs.astral.sh/uv/) - Python package and project manager
+- Git
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/tsen09/intelligent-cycling-assistant.git
+cd intelligent-cycling-assistant
+```
+
+### 2. Set Up Miguel
+
+Run the setup command to create the virtual environment and install the required dependencies using `uv`.
+
+```bash
+./miguel.sh setup
+```
+
+Alternatively, use the shorthand:
+
+```bash
+./miguel.sh -s
+```
+
+### 3. Run Miguel
+
+Start the application:
+
+```bash
+./miguel.sh run
+```
+
+If the project environment has not been configured, Miguel will prompt you to run the setup automatically.
+
+By default, the application runs at:
+
+```text
+http://127.0.0.1:8000
+```
+
+### 4. Uninstall Miguel
+
+To remove Miguel's local Python environment and generated build/cache artifacts:
+
+```bash
+./miguel.sh --remove
+```
+
+Alternatively:
+
+```bash
+./miguel.sh -r
+```
+
+Miguel will ask for confirmation before proceeding. Enter `y` to confirm or `n` to cancel.
+
+**Note:** Uninstallation preserves your source code, Git history, documentation, and shared system dependencies. It does not uninstall Python, `uv`, or PostgreSQL.
+
+### CLI Reference
+
+| Command | Description |
+|---|---|
+| `./miguel.sh setup` | Set up the project environment |
+| `./miguel.sh -s` | Set up the project environment (shorthand) |
+| `./miguel.sh run` | Start Miguel |
+| `./miguel.sh --remove` | Uninstall Miguel |
+| `./miguel.sh -r` | Uninstall Miguel (shorthand) |
+| `./miguel.sh --version` | Display the installed project version |
+| `./miguel.sh --help` | Display available commands |
 
 ---
 
