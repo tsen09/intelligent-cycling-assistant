@@ -1,19 +1,12 @@
-
 # ============================================================================
 # Miguel - Intelligent Cycling Assistant
-# Project Configuration
 # ============================================================================
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 # ============================================================================
 # Project Metadata
 # ============================================================================
 
 [project]
-name = "miguel"
+name = "Miguel"
 version = "0.1.0"
 description = "An intelligent virtual assistant for cycling enthusiasts."
 readme = "README.md"
@@ -101,6 +94,13 @@ select = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+# ============================================================================
+# uv Configuration
+# ============================================================================
+
+[tool.uv]
+package = false
 
 # ============================================================================
 # Project URLs

@@ -24,7 +24,7 @@ setup_environment() {
     print_banner
 
     printf '  %bEnvironment Setup%b\n' "$BOLD$WHITE" "$RESET"
-    printf '  %bPreparing Miguel for development...%b\n' "$DIM" "$RESET"
+    printf '  %bPreparing Miguel...%b\n' "$DIM" "$RESET"
 
     # --------------------------------------------------------
     # 1. Prerequisites
@@ -32,13 +32,38 @@ setup_environment() {
 
     print_section "1. Checking prerequisites"
 
-    if ! command -v uv &>/dev/null; then
-        log_error "uv is not installed."
-        log_info "Install: https://docs.astral.sh/uv/"
+    # Check for curl
+    if ! command -v curl &>/dev/null; then
+        log_error "curl is not installed."
+        log_info "Please install curl using your system package manager and retry."
         return 1
     fi
 
-    log_success "uv detected: $(uv --version)"
+    # Install uv if missing
+    if ! command -v uv &>/dev/null; then
+        log_warning "uv is not installed."
+        log_info "Installing uv using the official Astral installer..."
+
+        if ! curl -LsSf https://astral.sh/uv/install.sh | sh; then
+            log_error "Failed to install uv."
+            return 1
+        fi
+
+        # Update PATH for the current shell session
+        export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+
+        if ! command -v uv &>/dev/null; then
+            log_error "uv installation could not be verified."
+            log_info "Please restart your terminal and run setup again."
+            return 1
+        fi
+
+        log_success "uv installed successfully."
+    else
+        log_success "uv is already installed."
+    fi
+
+    log_info "Detected version: $(uv --version)"
 
     # --------------------------------------------------------
     # 2. Project configuration
@@ -54,16 +79,34 @@ setup_environment() {
     log_success "Project configuration found."
 
     # --------------------------------------------------------
-    # 3. Python installation
+    # 3. Python 3.13 installation
     # --------------------------------------------------------
 
-    print_section "3. Preparing Python environment"
+    print_section "3. Checking Python runtime"
 
-    log_info "Installing Python $PYTHON_VERSION if required..."
+    if ! uv python find 3.13 &>/dev/null; then
+        log_warning "Python 3.13 is not available."
+        log_info "Installing Python 3.13 using uv..."
 
-    uv python install "$PYTHON_VERSION"
+        if ! uv python install 3.13; then
+            log_error "Failed to install Python 3.13."
+            exit 1
+        fi
 
-    log_success "Python $PYTHON_VERSION is ready."
+        log_success "Python 3.13 installed successfully."
+    else
+        log_success "Python 3.13 is already available."
+    fi
+
+    # Resolve the Python interpreter path
+    PYTHON_VERSION=$(uv python find 3.13)
+
+    if [[ -z "$PYTHON_VERSION" ]]; then
+        log_error "Unable to locate the Python 3.13 interpreter."
+        exit 1
+    fi
+
+    log_info "Using Python interpreter: $PYTHON_VERSION"
 
     # --------------------------------------------------------
     # 4. Dependencies
@@ -71,11 +114,17 @@ setup_environment() {
 
     print_section "4. Installing dependencies"
 
-    log_info "Synchronizing project dependencies..."
+    log_info "Synchronizing project dependencies using uv..."
 
-    uv sync --python "$PYTHON_VERSION" --group dev
+    if ! uv sync --python "$PYTHON_VERSION" --group dev; then
+        log_error "Dependency installation failed."
+        log_info "Please review the error messages above and resolve the issue."
+        exit 1
+    fi
 
     log_success "Dependencies installed successfully."
+    log_success "Miguel development environment is ready."
+
 
     # --------------------------------------------------------
     # 5. Verification
