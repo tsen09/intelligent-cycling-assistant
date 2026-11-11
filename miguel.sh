@@ -141,8 +141,8 @@ main() {
         --version|-v)
             print_banner
 
-            if [[ ! -f "$PROJECT_ROOT/pyproject.toml" ]]; then
-                log_error "pyproject.toml not found."
+            if [[ ! -f "$PROJECT_ROOT/backend/pyproject.toml" ]]; then
+                log_error "pyproject.toml not found in backend directory."
                 exit 1
             fi
 
@@ -157,7 +157,7 @@ import tomllib
 
 with open(sys.argv[1], "rb") as f:
     print(tomllib.load(f)["project"]["version"])
-' "$PROJECT_ROOT/pyproject.toml")"
+' "$PROJECT_ROOT/backend/pyproject.toml")"
 
             printf '  %bMiguel v%s%b\n\n' "$BOLD" "$VERSION" "$RESET"
             ;;
