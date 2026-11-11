@@ -1,3 +1,4 @@
+import os
 import tomllib
 from pathlib import Path
 
@@ -14,7 +15,6 @@ from fastapi.templating import Jinja2Templates
 BASE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BASE_DIR.parent
 TEMPLATES_DIR = BASE_DIR / "templates"
-# Resolve path to .github/assets from the repository root
 ASSETS_DIR = PROJECT_ROOT.parent / ".github" / "assets"
 
 # Read project metadata from backend/pyproject.toml
@@ -23,6 +23,7 @@ with open(PROJECT_ROOT / "pyproject.toml", "rb") as file:
 
 VERSION = PROJECT_METADATA["version"]
 APP_NAME = PROJECT_METADATA["name"]
+ENVIRONMENT = os.getenv("ENV", "development")  # Defaults to development if not set
 
 
 # ---------------------------------------------------------------------------
@@ -35,7 +36,6 @@ app = FastAPI(
     version=VERSION,
 )
 
-# Mount static files to serve the icon assets
 app.mount("/.github/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
@@ -54,6 +54,7 @@ async def home(request: Request):
         name="home.html",
         context={
             "version": VERSION,
+            "env": ENVIRONMENT,
         },
     )
 
@@ -66,4 +67,5 @@ async def health_check():
         "application": APP_NAME,
         "status": "healthy",
         "version": VERSION,
+        "environment": ENVIRONMENT,
     }
