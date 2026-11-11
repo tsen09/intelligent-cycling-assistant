@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 
 set -Eeuo pipefail
@@ -67,12 +68,14 @@ parse_arguments() {
     done
 }
 
+
 # ============================================================================
 # Confirmation
 # ============================================================================
 
 confirm_uninstallation() {
     if [[ "$AUTO_CONFIRM" == true ]]; then
+        log_warning "Confirmation skipped (--yes)."
         return 0
     fi
 
@@ -81,22 +84,36 @@ confirm_uninstallation() {
     printf '  This will remove Miguel'\''s local Python environment\n'
     printf '  and generated build/cache artifacts.\n\n'
 
-    printf '  Your source code, Git history, documentation,\n'
-    printf '  and shared system dependencies will be preserved.\n\n'
+    printf '  The following will be preserved:\n'
+    printf '    - Source code and Git history\n'
+    printf '    - Project configuration and documentation\n'
+    printf '    - uv.lock and pyproject.toml\n'
+    printf '    - System-wide uv and Python installations\n'
+    printf '    - User-level dependencies and caches\n\n'
 
     if [[ ! -t 0 ]]; then
         log_error "Interactive confirmation required. Use --yes to proceed."
         exit 1
     fi
 
-    read -r -p "  Are you sure you want to continue? [y/N]: " response
+    read -r -p "  Are you sure you want to uninstall Miguel? [y/N]: " response || {
+        log_warning "No confirmation received. Uninstallation cancelled."
+        exit 0
+    }
 
     case "$response" in
-        [yY]|[yY][eE][sS])
+        [yY])
+            log_success "Uninstallation confirmed."
             return 0
             ;;
 
+        [nN]|"")
+            log_info "Uninstallation cancelled."
+            exit 0
+            ;;
+
         *)
+            log_warning "Invalid response. Please enter y or n."
             log_info "Uninstallation cancelled."
             exit 0
             ;;
@@ -111,32 +128,45 @@ remove_directory() {
     local target="$1"
 
     if [[ -d "$target" || -L "$target" ]]; then
-        rm -rf -- "$target"
-        log_info "Removed: ${target#"$PROJECT_ROOT"/}"
+        if rm -rf -- "$target"; then
+            log_success "Removed: ${target#"$PROJECT_ROOT"/}"
+        else
+            log_error "Failed to remove: ${target#"$PROJECT_ROOT"/}"
+            return 1
+        fi
     fi
 }
 
 remove_generated_artifacts() {
     local target
 
+    # ------------------------------------------------------------------------
     # Remove the Python virtual environment.
+    # ------------------------------------------------------------------------
+
     remove_directory "$PROJECT_ROOT/.venv"
 
+    # ------------------------------------------------------------------------
     # Remove common project-level caches and build artifacts.
+    # ------------------------------------------------------------------------
+
     for target in \
         "$PROJECT_ROOT/__pycache__" \
         "$PROJECT_ROOT/.pytest_cache" \
         "$PROJECT_ROOT/.ruff_cache" \
         "$PROJECT_ROOT/.mypy_cache" \
-        "$PROJECT_ROOT/.cache" \
         "$PROJECT_ROOT/build" \
         "$PROJECT_ROOT/dist"
     do
         remove_directory "$target"
     done
 
+    # ------------------------------------------------------------------------
     # Remove nested Python caches and generated package metadata.
-    find "$PROJECT_ROOT" \
+    # Preserve Git, IDE configuration, and nested virtual environments.
+    # ------------------------------------------------------------------------
+
+    if ! find "$PROJECT_ROOT" \
         -type d \( \
             -name .git -o \
             -name .venv -o \
@@ -149,9 +179,13 @@ remove_generated_artifacts() {
             -name .ruff_cache -o \
             -name .mypy_cache -o \
             -name '*.egg-info' \
-        \) -prune -exec rm -rf -- {} +
+        \) -prune -exec rm -rf -- {} +; then
 
-    log_info "Removed generated Python artifacts."
+        log_error "Failed to clean generated Python artifacts."
+        return 1
+    fi
+
+    log_success "Generated Python artifacts cleaned."
 }
 
 # ============================================================================
@@ -168,16 +202,17 @@ main() {
     confirm_uninstallation
 
     printf '\n'
-    log_info "Removing Miguel environment..."
+    print_section "Removing Miguel environment"
 
     remove_generated_artifacts
 
     printf '\n'
-    log_info "Miguel environment successfully removed."
+    log_success "Miguel environment successfully removed."
     printf '\n'
 
     printf '%bMiguel has been uninstalled.%b\n' "$BOLD" "$GREEN"
-    printf '  Project source files and Git history remain intact.\n\n'
+    printf '  Project source files and Git history remain intact.\n'
+    printf '  Run ./miguel.sh setup whenever you want to reinstall.\n\n'
 }
 
 main "$@"

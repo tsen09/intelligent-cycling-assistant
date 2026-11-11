@@ -106,15 +106,16 @@ Whether you're following the Tour de France, preparing for your next century rid
 
 ---
 
-## ⚙️ Setup & Usage
+## Setup & Usage
 
-Follow these steps to set up and run Miguel locally.
+Follow these steps to clone, set up, and run Miguel locally.
 
 ### Prerequisites
 
-- Python 3.13+
-- [uv](https://docs.astral.sh/uv/) - Python package and project manager
-- Git
+- **Git** – Required to clone the repository.
+- **curl** – Required by the setup script to install [uv](https://docs.astral.sh/uv/) automatically if it is not already available.
+
+**Note:** Python 3.13+ and `uv` do not need to be installed beforehand. Miguel's setup script handles their installation automatically.
 
 ### 1. Clone the Repository
 
