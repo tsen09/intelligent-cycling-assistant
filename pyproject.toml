@@ -7,7 +7,7 @@
 
 [project]
 name = "Miguel"
-version = "0.1.0"
+version = "0.1.1"
 description = "An intelligent virtual assistant for cycling enthusiasts."
 readme = "README.md"
 requires-python = ">=3.13"
