@@ -4,6 +4,7 @@
 # APPLICATION CONFIGURATION
 # ==========================================
 
+export MIGUEL_APP_MODULE="app.main:app"
 export APP_NAME="Miguel"
 export APP_DEBUG=true
 export APP_HOST="127.0.0.1"

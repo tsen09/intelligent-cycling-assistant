@@ -40,7 +40,7 @@ load_configuration() {
 
     if [[ ! -f "$ENV_FILE" ]]; then
         log_error ".env file not found: $ENV_FILE"
-        log_error "Create one using .env.example."
+        log_error "Create one using .env.example in the project root."
         exit 1
     fi
 
@@ -186,9 +186,9 @@ start_miguel() {
     printf '  Port        : %s\n' "$PORT"
     printf '  Entry point : %s\n\n' "$APP_MODULE"
 
-    cd "$PROJECT_ROOT"
+    cd "$PROJECT_ROOT/backend"
 
-    exec uv run --no-sync \
+    exec uv run --project "$PROJECT_ROOT" --no-sync \
         python -m uvicorn \
         "$APP_MODULE" \
         --host "$HOST" \
