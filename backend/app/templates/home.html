@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101820">
+
+    <title>Miguel | Intelligent Cycling Assistant</title>
+    
+    <!-- Favicon Icon -->
+    <link rel="icon" type="image/png" href="/.github/assets/miguel-cyclist-icon.png">
+
+    <style>
+        :root {
+            --background: #101820;
+            --surface: #18242d;
+            --surface-light: #21313b;
+            --primary: #b8e2d0;
+            --text: #f1f5f4;
+            --muted: #a9bbc0;
+            --border: #30414b;
+            --success: #75d6a4;
+            --warning: #f6c90e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
+            font-family: Inter, -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(100% - 40px, 1050px);
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .navbar {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--surface-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .brand-icon img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+        .brand-subtitle {
+            color: var(--muted);
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            margin-top: 3px;
+        }
+
+        .status-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .env-badge {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--success);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 80px 0;
+        }
+
+        .hero {
+            max-width: 760px;
+        }
+
+        .eyebrow {
+            color: var(--primary);
+            font-size: 13px;
+            font-style: italic;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: clamp(36px, 6vw, 62px);
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            margin-bottom: 24px;
+        }
+
+        h1 span {
+            color: var(--primary);
+        }
+
+        .description {
+            max-width: 660px;
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 55px;
+        }
+
+        .tag {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            color: var(--muted);
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .section-title {
+            font-size: 13px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 18px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .card-icon {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .card h2 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .card-link {
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 22px 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 55px 0;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .description {
+                font-size: 15px;
+            }
+
+            .brand-subtitle {
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <picture>
+                        <source media="(prefers-color-scheme: dark)" srcset="/.github/assets/miguel-cyclist-icon-dark.png">
+                        <img src="/.github/assets/miguel-cyclist-icon.png" alt="Miguel Cyclist Icon">
+                    </picture>
+                </div>
+                <div>
+                    <div class="brand-name">MIGUEL</div>
+                    <div class="brand-subtitle">
+                        INTELLIGENT CYCLING ASSISTANT
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-group">
+                <div class="env-badge">{{ env }}</div>
+                <div class="status">
+                    <span class="status-dot"></span>
+                    API Online
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="hero">
+                <div class="eyebrow">
+                    Your ride. Your passion. My expertise. 🚴
+                </div>
+
+                <h1>
+                    Your intelligent<br>
+                    <span>cycling companion.</span>
+                </h1>
+
+                <p class="description">
+                    From the professional peloton to your garage, everything cycling under one roof. Miguel brings together mechanical troubleshooting, race analysis, training guidance, and cycling knowledge into one seamless experience.
+                </p>
+
+                <div class="tags">
+                    <span class="tag">Mechanic & Troubleshooting</span>
+                    <span class="tag">Race Analysis</span>
+                    <span class="tag">Training & Nutrition</span>
+                    <span class="tag">Peloton & Pro Cycling</span>
+                </div>
+
+                <div class="section-title">
+                    Explore the backend
+                </div>
+
+                <div class="cards">
+                    <a class="card" href="/docs">
+                        <div class="card-icon">📖</div>
+                        <h2>API Documentation</h2>
+                        <p>
+                            Explore available API endpoints,
+                            request parameters, and response schemas.
+                        </p>
+                        <span class="card-link">
+                            OPEN SWAGGER UI →
+                        </span>
+                    </a>
+
+                    <a class="card" href="/health">
+                        <div class="card-icon">💚</div>
+                        <h2>Health Check</h2>
+                        <p>
+                            Check the current health and availability
+                            of the Miguel backend service.
+                        </p>
+                        <span class="card-link">
+                            CHECK API STATUS →
+                        </span>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <span>Miguel API · v{{ version }} [{{ env }}]</span>
+            <span>Built for cyclists, by cyclists. 🚴</span>
+        </div>
+    </footer>
+</body>
+</html>
