@@ -71,7 +71,7 @@ setup_environment() {
 
     print_section "2. Validating project configuration"
 
-    if [[ ! -f "$PROJECT_ROOT/pyproject.toml" ]]; then
+    if [[ ! -f "$PROJECT_ROOT/backend/pyproject.toml" ]]; then
         log_error "pyproject.toml not found."
         return 1
     fi
@@ -113,6 +113,7 @@ setup_environment() {
     # --------------------------------------------------------
 
     print_section "4. Installing dependencies"
+    cd "$PROJECT_ROOT/backend"
 
     log_info "Synchronizing project dependencies using uv..."
 

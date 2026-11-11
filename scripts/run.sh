@@ -19,7 +19,7 @@ CONFIG_DIR="$PROJECT_ROOT/backend/config"
 ENV_FILE="$PROJECT_ROOT/.env"
 SETUP_SCRIPT="$SCRIPTS_DIR/setup.sh"
 
-VENV_DIR="$PROJECT_ROOT/.venv"
+VENV_DIR="$PROJECT_ROOT/backend/.venv"
 VENV_PYTHON="$VENV_DIR/bin/python"
 
 # ----------------------------------------------------------------------------
