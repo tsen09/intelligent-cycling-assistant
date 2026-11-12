@@ -1,0 +1,49 @@
+[build-system]
+requires = [
+    "setuptools>=69",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miguel-shared"
+version = "0.1.0"
+description = "Shared utilities for Miguel Application (Logging, Database, Exceptions)."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" } # Modern PEP 621 format
+
+authors = [
+    { name = "Tanmoy Sen", email = "sentanmoy09@gmail.com" },
+]
+
+keywords = [
+    "miguel",
+    "shared",
+    "database",
+    "logging",
+    "exceptions",
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "python-dotenv>=1.0.0",
+    "sqlalchemy>=2.0",
+    "psycopg2-binary>=2.9",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = [
+    "miguel*",
+]
+namespaces = true
